@@ -4,10 +4,12 @@ const uploadToCloudinary=require('../config/uploadToCloudinary');
 
 exports.uploadPhoto=async(req,res)=>{
     try{
+        
         const file = req.files.image;
+        
         //create a successful response
         const ans=await uploadToCloudinary(file);
-        console.log('ans',ans.url);
+        
         if(!ans)
         {
             return res.status(400).json({
@@ -16,7 +18,6 @@ exports.uploadPhoto=async(req,res)=>{
             })
         }
         
-
         return res.status(200).json({
             success:true,
             message:'photo successfully uploaded',
@@ -49,6 +50,28 @@ exports.createItem=async(req,res)=>{
             success:true,
             message:'Item Created Successfully',
             data:newItem
+        })
+
+    }catch (error) {
+        // Handle any errors that may occur during the process)
+        return res.status(500).json({
+          success: false,
+          message: "Error in Creating Items.",
+          error: error.message,
+        })
+      }
+}
+
+exports.AdminItems=async(req,res)=>{
+    try{
+       
+        const user_id=req.params.id;
+        const user=await Item.find({creator:user_id}).exec();
+
+        return res.status(200).json({
+            success:true,
+            message:'Item Created Successfully',
+            data:user
         })
 
     }catch (error) {
